@@ -120,3 +120,26 @@ cm = confusion_matrix(y_test, y_pred_best)
 fig2, ax2 = plt.subplots()
 ConfusionMatrixDisplay(cm).plot(ax=ax2)
 st.pyplot(fig2)
+
+st.subheader("🔮 Check Your Diabetes Risk")
+
+input_data = {}
+
+for column in X.columns:
+    input_data[column] = st.number_input(f"Enter {column}")
+
+if st.button("Predict Diabetes"):
+
+    input_df = pd.DataFrame([input_data])
+
+    # Scale
+    input_scaled = scaler.transform(input_df)
+
+    # Predict
+    prediction = best_model.predict(input_scaled)
+
+    if prediction[0] == 1:
+        st.error("⚠️ High Risk of Diabetes")
+    else:
+        st.success("✅ Low Risk of Diabetes")
+
