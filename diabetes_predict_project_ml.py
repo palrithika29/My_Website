@@ -22,8 +22,7 @@ from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, Confusio
 # -------------------------------
 # Load Dataset
 # -------------------------------
-file_path = "C:\\Second Year Files L.R Assigments & Projects\\SEM 4 ML\\ML Project Diabetes Prediction\\Diabetes_Dataset_Project.xlsx"
-df = pd.read_excel(file_path)
+df = pd.read_excel("Diabetes_Dataset_Project.xlsx")
 
 # Preview data
 df.head()
