@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -121,25 +122,71 @@ fig2, ax2 = plt.subplots()
 ConfusionMatrixDisplay(cm).plot(ax=ax2)
 st.pyplot(fig2)
 
-st.subheader("🔮 Check Your Diabetes Risk")
 
-input_data = {}
+st.subheader("🩺 Diabetes Risk Predictor")
 
-for column in X.columns:
-    input_data[column] = st.number_input(f"Enter {column}")
+st.write("Enter basic details to check your diabetes risk")
 
-if st.button("Predict Diabetes"):
+# 1️⃣ Age
+age = st.number_input("Enter Age", min_value=10, max_value=100, value=25)
 
-    input_df = pd.DataFrame([input_data])
+# 2️⃣ Height (in meters)
+height = st.number_input("Enter Height (in meters)", min_value=1.0, max_value=2.5, value=1.65)
 
-    # Scale
-    input_scaled = scaler.transform(input_df)
+# 3️⃣ Weight
+weight = st.number_input("Enter Weight (in kg)", min_value=30.0, max_value=200.0, value=60.0)
 
-    # Predict
+# 4️⃣ Gender Dropdown
+gender = st.selectbox("Select Gender", ["Male", "Female", "Other"])
+
+gender_mapping = {
+    "Male": 1,
+    "Female": 0,
+    "Other": 2
+}
+gender_value = gender_mapping[gender]
+
+# 5️⃣ Exercise Days
+exercise = st.number_input("Enter Exercise Days per Week", min_value=0, max_value=7, value=3)
+
+# Automatically Calculate BMI
+bmi = weight / (height ** 2)
+
+# Default values for remaining features
+diet = 1
+familyhist = 0
+sugarfreq = 1
+thirst = 0
+tired = 0
+urination = 0
+highbp = 0
+
+if st.button("Predict Diabetes Risk"):
+
+    input_data = np.array([[ 
+        age,
+        height,
+        weight,
+        bmi,
+        gender_value,
+        diet,
+        familyhist,
+        sugarfreq,
+        exercise,
+        thirst,
+        tired,
+        urination,
+        highbp
+    ]])
+
+    input_scaled = scaler.transform(input_data)
+
     prediction = best_model.predict(input_scaled)
 
     if prediction[0] == 1:
-        st.error("⚠️ High Risk of Diabetes")
+        st.error("⚠ High Risk of Diabetes")
     else:
         st.success("✅ Low Risk of Diabetes")
+
+    st.info(f"Calculated BMI: {round(bmi, 2)}")
 
