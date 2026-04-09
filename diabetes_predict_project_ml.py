@@ -16,6 +16,12 @@ st.title("Diabetes Prediction ML Project")
 # -------------------------------
 df = pd.read_excel("Diabetes_Dataset_Project.xlsx")
 
+# Remove completely empty rows
+df = df.dropna(how="all")
+
+# Remove spaces in text cells
+df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+
 st.subheader("Dataset Preview")
 st.dataframe(df.head())
 
@@ -50,6 +56,12 @@ label_encoder = LabelEncoder()
 for column in df.columns:
     if df[column].dtype == 'object':
         df[column] = label_encoder.fit_transform(df[column])
+
+# Ensure all columns are numeric
+df = df.apply(pd.to_numeric, errors='coerce')
+
+# Replace missing values
+df = df.fillna(0)
 
 # -------------------------------
 # Split Data
