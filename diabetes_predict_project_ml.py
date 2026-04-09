@@ -20,7 +20,9 @@ df = pd.read_excel("Diabetes_Dataset_Project.xlsx")
 df = df.dropna(how="all")
 
 # Remove spaces in text cells
-df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+# Remove spaces only from text columns
+for col in df.select_dtypes(include='object'):
+    df[col] = df[col].str.strip()
 
 st.subheader("Dataset Preview")
 st.dataframe(df.head())
